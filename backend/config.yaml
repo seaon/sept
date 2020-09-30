@@ -1,0 +1,21 @@
+#debug or release or test
+appMode: debug
+
+app:
+  page      : 1
+  pageSize  : 15
+  jwtSecret : '23347$040412'
+
+server:
+  port         : 8089
+  readTimeout  : 60
+  writeTimeout : 60
+  corsOrigin   : '*'
+
+database:
+  type        : mysql
+  user        : root
+  password    : '123456'
+  host        : '192.168.18.129:3306'
+  dbname      : 'backend'
+  tablePrefix : t_
