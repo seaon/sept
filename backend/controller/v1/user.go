@@ -1,11 +1,16 @@
 package v1
 
 import (
+	"backend/config"
 	"backend/model"
 	"backend/service"
+	resp "backend/structures/response"
+	"backend/utils"
 	response "backend/utils/app"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 func Login(c *gin.Context) {
@@ -22,10 +27,23 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	response.OkWithData(model.UserData{
+	j := utils.NewJWT()
+	token, _ := j.CreateToken(utils.CustomClaims{
 		ID:       ret.ID,
 		Username: ret.Username,
-		MobileNo: ret.MobileNo,
+		StandardClaims: jwt.StandardClaims{
+			NotBefore: time.Now().Unix() - 1000,       // 签名生效时间
+			ExpiresAt: time.Now().Unix() + 60*60*24*7, // 过期时间 7天
+			Issuer:    config.GetApp().JwtSecret,      // 签名的发行者
+		},
+	})
+
+	response.OkWithData(resp.Login{
+		Token: token,
+		User: resp.UserData{
+			ID:       ret.ID,
+			Username: ret.Username,
+		},
 	}, c)
 	return
 }
@@ -48,10 +66,9 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	response.OkWithData(model.UserData{
+	response.OkWithData(resp.UserData{
 		ID:       ret.ID,
 		Username: ret.Username,
-		MobileNo: ret.MobileNo,
 	}, c)
 	return
 }

@@ -3,16 +3,18 @@ package model
 import (
 	"backend/config"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
+	"time"
 )
 
 var DB *gorm.DB
 
 type Model struct {
-	ID        int `gorm:"primary_key" json:"id"`
-	CreatedAt int `json:"created_at"`
-	UpdatedAt int `json:"updated_at"`
+	ID        int       `gorm:"primary_key" json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type PageInfo struct {
@@ -29,7 +31,13 @@ func init() {
 		config.GetDatabase().Host,
 		config.GetDatabase().Dbname)
 
-	db, err := gorm.Open("mysql", dsn)
+	//db, err := gorm.Open("mysql", dsn)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			TablePrefix:   config.GetDatabase().TablePrefix,
+			SingularTable: true,
+		},
+	})
 
 	if err != nil {
 		panic(err)
@@ -37,12 +45,12 @@ func init() {
 
 	DB = db
 
-	// 修改 gorm 的数据表名默认组成
-	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
-		return config.GetDatabase().TablePrefix + defaultTableName
+	sqlDB, err := db.DB()
+	if err != nil {
+		panic(err)
 	}
 
-	db.SingularTable(true)
-	db.DB().SetMaxIdleConns(10)
-	db.DB().SetMaxOpenConns(10)
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetConnMaxLifetime(time.Hour)
 }

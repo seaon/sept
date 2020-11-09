@@ -16,6 +16,6 @@ database:
   type        : mysql
   user        : root
   password    : '123456'
-  host        : '192.168.18.129:3306'
+  host        : '192.168.18.95:3306'
   dbname      : 'backend'
   tablePrefix : t_

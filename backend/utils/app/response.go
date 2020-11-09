@@ -14,8 +14,12 @@ type Response struct {
 const (
 	SUCCESS         = 0
 	ERROR           = 10
+	AuthFailed      = 20
+	AuthExpired     = 21
 	InvalidArgument = 100
 )
+
+var empty map[string]string
 
 func Result(code int, data interface{}, msg string, c *gin.Context) {
 	// 开始时间
@@ -27,11 +31,11 @@ func Result(code int, data interface{}, msg string, c *gin.Context) {
 }
 
 func Ok(c *gin.Context) {
-	Result(SUCCESS, map[string]interface{}{}, "操作成功", c)
+	Result(SUCCESS, empty, "操作成功", c)
 }
 
 func OkWithMessage(message string, c *gin.Context) {
-	Result(SUCCESS, map[string]interface{}{}, message, c)
+	Result(SUCCESS, empty, message, c)
 }
 
 func OkWithData(data interface{}, c *gin.Context) {
@@ -43,17 +47,17 @@ func OkDetailed(data interface{}, message string, c *gin.Context) {
 }
 
 func Fail(c *gin.Context) {
-	Result(ERROR, map[string]interface{}{}, "失败", c)
+	Result(ERROR, empty, "失败", c)
 }
 
 func FailWithMessage(message string, c *gin.Context) {
-	Result(ERROR, map[string]interface{}{}, message, c)
+	Result(ERROR, empty, message, c)
 }
 
 func FailWithCode(code int, message string, c *gin.Context) {
-	Result(code, map[string]interface{}{}, message, c)
+	Result(code, empty, message, c)
 }
 
-func FailWithDetailed(code int, data interface{}, message string, c *gin.Context) {
-	Result(code, data, message, c)
+func FailWithDetailed(code int, message string, c *gin.Context) {
+	Result(code, empty, message, c)
 }
