@@ -34,7 +34,7 @@ func Login(c *gin.Context) {
 		StandardClaims: jwt.StandardClaims{
 			NotBefore: time.Now().Unix() - 1000,       // 签名生效时间
 			ExpiresAt: time.Now().Unix() + 60*60*24*7, // 过期时间 7天
-			Issuer:    config.GetApp().JwtSecret,      // 签名的发行者
+			Issuer:    config.GetApp().Name,           // 签名的发行者
 		},
 	})
 

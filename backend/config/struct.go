@@ -10,6 +10,7 @@ type App struct {
 	Page      int
 	PageSize  int
 	JwtSecret string
+	Name      string
 }
 
 type Server struct {

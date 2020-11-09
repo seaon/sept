@@ -5,6 +5,7 @@ app:
   page      : 1
   pageSize  : 15
   jwtSecret : '23347$040412'
+  name      : gin-backend
 
 server:
   port         : 8089
